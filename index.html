@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#8FC9A3">
+<title>은또링쌤의 행성 지도 · ATLAS</title>
+<meta name="description" content="특성화고 「성공적인 직업생활」 개념 마인드맵 · 수업용 웹앱">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="deco d1"></div><div class="deco d2"></div>
+  <div class="deco d3"></div><div class="deco d4"></div>
+
+  <section class="hero">
+    <h1>성공적인 <b>직업생활</b> 개념 지도</h1>
+    <svg class="hw" width="230" height="16" viewBox="0 0 230 16" fill="none" aria-hidden="true"
+      style="margin-left:auto;margin-right:auto">
+      <path d="M3 8c8-5 16-5 24 0s16 5 24 0 16-5 24 0 16 5 24 0 16-5 24 0 16 5 24 0 16-5 24 0 16 5 24 0"
+        stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="hs">강을 눌러 개념 마인드맵을 여세요 · 직업탐구영역 2027 수능 대비</div>
+  </section>
+
+  <div class="homemap">
+    <div class="hgrid" id="hgrid">
+      <div class="hcore"><div class="halo"></div>
+        <div class="disc">성공적인<br>직업생활</div></div>
+    </div>
+  </div>
+  <div class="homenote" id="hnote"></div>
+
+  <footer class="foot">
+    <div class="signbox">
+      <span class="stars" aria-hidden="true">
+        <i style="left:6%;top:24%;width:7px;height:7px;animation-delay:0s"></i>
+        <i style="left:12%;top:66%;width:5px;height:5px;animation-delay:.9s"></i>
+        <i style="left:88%;top:26%;width:5px;height:5px;animation-delay:1.4s"></i>
+        <i style="left:94%;top:64%;width:7px;height:7px;animation-delay:.5s"></i>
+      </span>
+      <div class="lab-sign">
+      <svg width="32" height="32" viewBox="0 0 46 46" aria-hidden="true">
+        <path d="M4.93 28.54A17 5 -19 0 1 37.07 17.46" fill="none" stroke="#8FC9A3" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="21" cy="23" r="9.5" fill="#EE8C93"/>
+        <circle cx="18" cy="20" r="2.6" fill="#DB7F8C"/>
+        <circle cx="24" cy="26" r="1.7" fill="#DB7F8C"/>
+        <path d="M4.93 28.54A17 5 -19 0 0 37.07 17.46" fill="none" stroke="#8FC9A3" stroke-width="2" stroke-linecap="round"/>
+        <g fill="#C9D26E">
+          <circle class="st1" cx="39" cy="9" r="1.9"/>
+          <circle class="st2" cx="6" cy="12" r="1.4"/>
+          <circle class="st3" cx="38" cy="38" r="1.5"/>
+        </g>
+      </svg>
+      <div class="txt"><div class="t1">은또링쌤의 행성 연구소</div><div class="t2">PLANET LAB</div></div>
+    </div></div>
+    <div class="src">EBS 수능특강 직업탐구영역 「성공적인 직업생활」(2027학년도) 기준</div>
+  </footer>
+</div>
+
+<script src="assets/lessons.js"></script>
+<script>
+buildNav(0);
+const g=document.getElementById('hgrid');
+let readyN=0, doneN=0;
+CLUSTERS.forEach(c=>{
+  const box=document.createElement('div');
+  box.className=`hgrp ${c.side} r${c.row} g${c.g}`;
+  const cards=c.ns.map(n=>{
+    const L=LESSONS.find(x=>x.n===n);
+    if(!L.ready)return `<span class="lcard soon"><span class="ln">${PAD(n)}</span>${L.t}</span>`;
+    readyN++;
+    let pg='';
+    try{const s=JSON.parse(localStorage.getItem(LKEY(n))||'null');
+      if(s&&s.ok>0){pg=`<span class="pg">${s.ok}/${s.total}</span>`;if(s.ok===s.total)doneN++;}
+    }catch(e){}
+    return `<a class="lcard ${pg.includes('class')&&pg?'':''}" href="lesson${PAD(n)}.html">
+      <span class="ln">${PAD(n)}</span>${L.t}${pg}</a>`;
+  }).join('');
+  box.innerHTML=`<span class="gt">${c.name}</span><div class="hlist">${cards}</div>`;
+  g.appendChild(box);
+});
+document.getElementById('hnote').innerHTML=
+  `현재 <b>${readyN}개 강</b>이 열려 있습니다. 나머지는 순서대로 추가됩니다.<br>
+   왼쪽·오른쪽 묶음은 교재의 공식 대단원이 아니라 주제별 편의 분류입니다.`;
+</script>
+</body>
+</html>

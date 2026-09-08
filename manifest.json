@@ -1,0 +1,16 @@
+{
+  "name": "은또링쌤의 행성 지도",
+  "short_name": "행성 지도",
+  "description": "특성화고 「성공적인 직업생활」 개념 마인드맵 · 수업용 웹앱",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FFFFFF",
+  "theme_color": "#8FC9A3",
+  "lang": "ko",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
