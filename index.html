@@ -25,6 +25,7 @@
   </section>
 
   <div class="homemap">
+    <svg id="hlinks"></svg>
     <div class="hgrid" id="hgrid">
       <div class="hcore"><div class="halo"></div>
         <div class="disc">성공적인<br>직업생활</div></div>
@@ -75,12 +76,50 @@ CLUSTERS.forEach(c=>{
     try{const s=JSON.parse(localStorage.getItem(LKEY(n))||'null');
       if(s&&s.ok>0){pg=`<span class="pg">${s.ok}/${s.total}</span>`;if(s.ok===s.total)doneN++;}
     }catch(e){}
-    return `<a class="lcard ${pg.includes('class')&&pg?'':''}" href="lesson${PAD(n)}.html">
-      <span class="ln">${PAD(n)}</span>${L.t}${pg}</a>`;
+    return `<a class="lcard open" href="lesson${PAD(n)}.html">
+      <span class="ln">${PAD(n)}</span>${L.t}${pg}<span class="go">→</span></a>`;
   }).join('');
   box.innerHTML=`<span class="gt">${c.name}</span><div class="hlist">${cards}</div>`;
   g.appendChild(box);
 });
+
+/* 코어 → 묶음 점선 연결 */
+const hm=document.querySelector('.homemap'), hsvg=document.getElementById('hlinks');
+const NS='http://www.w3.org/2000/svg';
+function hdraw(){
+  hsvg.innerHTML='';
+  const r=hm.getBoundingClientRect();
+  hsvg.setAttribute('viewBox',`0 0 ${r.width} ${r.height}`);
+  hsvg.setAttribute('width',r.width);hsvg.setAttribute('height',r.height);
+  if(innerWidth<=900)return;
+  const d=document.createElementNS(NS,'defs');
+  const m=document.createElementNS(NS,'marker');
+  m.setAttribute('id','ha');m.setAttribute('viewBox','0 0 10 10');m.setAttribute('refX','8');
+  m.setAttribute('refY','5');m.setAttribute('markerWidth','5');m.setAttribute('markerHeight','5');
+  m.setAttribute('orient','auto-start-reverse');
+  const pa=document.createElementNS(NS,'path');
+  pa.setAttribute('d','M0,1 L9,5 L0,9 z');pa.setAttribute('fill','#EE8C93');
+  m.appendChild(pa);d.appendChild(m);hsvg.appendChild(d);
+  const C=document.querySelector('.hcore .disc').getBoundingClientRect();
+  const cx=C.left-r.left+C.width/2, cy=C.top-r.top+C.height/2;
+  document.querySelectorAll('.hgrp .gt').forEach(g=>{
+    const b=g.getBoundingClientRect();
+    const left=g.parentElement.classList.contains('L');
+    const ex=(left?b.right:b.left)-r.left+(left?8:-8), ey=b.top-r.top+b.height/2;
+    const sx=cx+(left?-C.width/2-6:C.width/2+6), sy=cy+(ey<cy?-22:22);
+    const mx=(sx+ex)/2,my=(sy+ey)/2,dx=ex-sx,dy=ey-sy,len=Math.hypot(dx,dy)||1;
+    const off=Math.min(40,len*0.2);
+    const path=document.createElementNS(NS,'path');
+    path.setAttribute('d',`M${sx},${sy} Q${mx-dy/len*off},${my+dx/len*off} ${ex},${ey}`);
+    path.setAttribute('fill','none');path.setAttribute('stroke','#EE8C93');
+    path.setAttribute('stroke-width','2.2');path.setAttribute('stroke-dasharray','8 7');
+    path.setAttribute('stroke-linecap','round');path.setAttribute('marker-end','url(#ha)');
+    hsvg.appendChild(path);
+  });
+}
+addEventListener('resize',hdraw);
+requestAnimationFrame(()=>{hdraw();setTimeout(hdraw,300);});
+
 document.getElementById('hnote').innerHTML=
   `현재 <b>${readyN}개 강</b>이 열려 있습니다. 나머지는 순서대로 추가됩니다.<br>
    왼쪽·오른쪽 묶음은 교재의 공식 대단원이 아니라 주제별 편의 분류입니다.`;
