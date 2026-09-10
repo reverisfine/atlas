@@ -2,7 +2,7 @@
 const LESSONS=[
  {n:1, t:"일과 직업 및 직업 생활",              c:20, ready:true},
  {n:2, t:"생애 발달과 직업적 성공 (1)", c:20, ready:true},
- {n:3, t:"생애 발달과 직업적 성공 (2)",          ready:false},
+ {n:3, t:"생애 발달과 직업적 성공 (2)", c:20, ready:true},
  {n:4, t:"기업의 종류와 형태별 특징",             ready:false},
  {n:5, t:"기업의 경영 활동",                    ready:false},
  {n:6, t:"제조업과 제품 생산 활동",               ready:false},
