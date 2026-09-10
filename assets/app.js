@@ -108,7 +108,7 @@ function openDetail(it){
     <div class="dh"><h3>${it.k}</h3><span class="dots" title="출제 중요도">${dots}</span>
       ${it.hot?'<span class="tag">기출 단골</span>':''}
       ${(GIBY[it.k]||[]).length?`<span class="tag2">📝 선지 ${GIBY[it.k].length}문항</span>`:''}</div>
-    <div class="path">01강 › ${DATA[it._bi].b}</div>${it.d}${gichulHTML(it.k)}`;
+    <div class="path">${PAD(LESSON.no)}강 › ${DATA[it._bi].b}</div>${it.d}${gichulHTML(it.k)}`;
   det.querySelector('.xc').onclick=e=>{e.stopPropagation();closeDetail();};
   det.classList.add('show');
   requestAnimationFrame(()=>place(it));
@@ -263,7 +263,7 @@ function gichulHTML(name){
 }
 
 /* ================= 출제 그래프 ================= */
-const MAXY=10;
+const MAXY=(typeof YMAX!=='undefined'&&YMAX)?YMAX:10;   /* 강별 데이터에서 YMAX로 세로축 최댓값을 덮어쓸 수 있음 */
 YEARS.forEach(d=>{
   const col=el('div','barcol'+(d.n>=8?' hi':''));
   const tip=d.su===null?`${d.y}학년도 · 6월·9월 모평까지 ${d.n}문항`
@@ -271,7 +271,7 @@ YEARS.forEach(d=>{
   col.innerHTML=`<div class="tip">${tip}</div>
     <div class="gbar"><span class="v">${d.n}</span><span class="yr">${d.y}</span></div>
     <div class="cap">${d.su===null?'9월까지':'수능 '+d.su+'문항'}</div>`;
-  col._h=(d.n/MAXY*100)+'%';$('bars').appendChild(col);
+  col._h=Math.max(d.n/MAXY*100,14)+'%';   /* 값이 작아도 연도 글자가 보이도록 최소 높이 확보 */$('bars').appendChild(col);
 });
 const FMAX=Math.max(...FREQ.map(x=>x[1]))||1;
 FREQ.forEach(([k,v])=>{
