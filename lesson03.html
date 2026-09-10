@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#8FC9A3">
+<title>03강 생애 발달과 직업적 성공 (2) · 은또링쌤의 행성 지도</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="deco d1"></div><div class="deco d2"></div>
+  <div class="deco d3"></div><div class="deco d4"></div>
+
+  <header>
+    <div class="tt">
+      <div class="lv" id="hLv">01강 · 개념 매칭</div>
+      <h1 id="hTitle">일과 직업 및 직업 생활</h1>
+      <svg class="wave" width="230" height="16" viewBox="0 0 230 16" fill="none" aria-hidden="true">
+        <path d="M3 8c8-5 16-5 24 0s16 5 24 0 16-5 24 0 16 5 24 0 16-5 24 0 16 5 24 0 16-5 24 0 16 5 24 0"
+          stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+    </div>
+    <div class="sub" id="hSub"></div>
+  </header>
+
+  <div class="bar"><div class="in">
+    <div class="score">
+      <span class="s s1">붙인 개념 <b id="sDone">0</b> / <b id="sTotal">0</b></span>
+      <span class="s s2">정답 <b id="sOk">0</b></span>
+      <span class="s s3">오답 <b id="sNo">0</b></span>
+    </div>
+    <div class="btns">
+      <button class="b" id="bShuffle">보기 섞기</button>
+      <button class="b" id="bReveal">정답 모두 보기</button>
+      <button class="b" id="bBig">큰 글씨</button>
+      <button class="b pri" id="bReset">다시하기</button>
+    </div>
+  </div></div>
+
+  <section class="pool">
+    <div class="ph">
+      <span class="t">보기</span>
+      <span class="d">개념을 누른 뒤 알맞은 소단원을 누르세요. 끌어다 놓아도 됩니다.</span>
+      <span class="left">남은 개념 <b id="pLeft">0</b></span>
+    </div>
+    <div class="toks" id="toks"></div>
+  </section>
+
+  <div class="mapwrap">
+    <div class="map" id="map">
+      <svg id="links"></svg>
+      <div class="detail" id="detail"></div>
+      <div class="core" id="core">
+        <div class="halo"></div>
+        <div class="disc" id="coreT"></div>
+      </div>
+    </div>
+  </div>
+
+  <section class="sect">
+    <div class="sh">
+      <div class="tt">
+        <h2>이건 꼭 <b>틀려요</b></h2>
+        <svg class="wave" width="190" height="14" viewBox="0 0 230 16" fill="none" aria-hidden="true">
+          <path d="M3 8c8-5 16-5 24 0s16 5 24 0 16-5 24 0 16 5 24 0 16-5 24 0 16 5 24 0 16-5 24 0 16 5 24 0"
+            stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </div>
+      <div class="sd">인출은 했는데 선택지에서 갈리는 지점입니다. 눌러서 좌우를 비교해 보세요.</div>
+    </div>
+    <div id="pits"></div>
+  </section>
+
+  <section class="sect">
+    <div class="sh pinky">
+      <div class="tt">
+        <h2 id="fqT">출제 <b>빈도</b></h2>
+        <svg class="wave" width="170" height="13" viewBox="0 0 230 16" fill="none" aria-hidden="true">
+          <path d="M3 8c8-5 16-5 24 0s16 5 24 0 16-5 24 0 16 5 24 0 16-5 24 0 16 5 24 0 16-5 24 0 16 5 24 0"
+            stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </div>
+      <div class="sd">2022~2027학년도 6월·9월 모평, 10월 학평, 대학수학능력시험 <b>총 22회분</b>을 직접 분석해
+        이 강의 개념을 직접 묻는 문항을 집계했습니다.</div>
+    </div>
+    <div class="chartbox">
+      <div class="yax"><span>3</span><span>2</span><span>1</span><span>0</span></div>
+      <div class="bars" id="bars"></div>
+    </div>
+    <div class="chartnote" id="cnote"></div>
+    <div class="freq" id="freq"></div>
+  </section>
+
+  <section class="result">
+    <h3>매칭 결과</h3>
+    <div class="sm">소단원마다 몇 개를 붙였는지, 어떤 개념을 틀렸는지 여기서 확인합니다.</div>
+    <div class="rstat">
+      <div class="o"><b id="rOk">0</b>맞힌 개념</div>
+      <div class="x"><b id="rNo">0</b>틀린 횟수</div>
+      <div><b id="rRate">-</b>정답률</div>
+    </div>
+    <div class="rgrid">
+      <div class="rcol"><div class="rt">소단원별 진행</div><div id="prog4"></div></div>
+      <div class="rcol"><div class="rt">다시 봐야 할 개념</div>
+        <div id="wlist"><span class="none">아직 틀린 개념이 없습니다.</span></div></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="signbox">
+      <span class="stars" aria-hidden="true">
+        <i style="left:6%;top:24%;width:7px;height:7px;animation-delay:0s"></i>
+        <i style="left:12%;top:66%;width:5px;height:5px;animation-delay:.9s"></i>
+        <i style="left:88%;top:26%;width:5px;height:5px;animation-delay:1.4s"></i>
+        <i style="left:94%;top:64%;width:7px;height:7px;animation-delay:.5s"></i>
+      </span>
+      <div class="lab-sign">
+      <svg width="32" height="32" viewBox="0 0 46 46" aria-hidden="true">
+        <path d="M4.93 28.54A17 5 -19 0 1 37.07 17.46" fill="none" stroke="#8FC9A3" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="21" cy="23" r="9.5" fill="#EE8C93"/>
+        <circle cx="18" cy="20" r="2.6" fill="#DB7F8C"/>
+        <circle cx="24" cy="26" r="1.7" fill="#DB7F8C"/>
+        <path d="M4.93 28.54A17 5 -19 0 0 37.07 17.46" fill="none" stroke="#8FC9A3" stroke-width="2" stroke-linecap="round"/>
+        <g fill="#C9D26E">
+          <circle class="st1" cx="39" cy="9" r="1.9"/>
+          <circle class="st2" cx="6" cy="12" r="1.4"/>
+          <circle class="st3" cx="38" cy="38" r="1.5"/>
+        </g>
+      </svg>
+      <div class="txt">
+        <div class="t1">은또링쌤의 행성 연구소</div>
+        <div class="t2">PLANET LAB</div>
+      </div>
+    </div></div>
+    <div class="src">EBS 수능특강 직업탐구영역 「성공적인 직업생활」(2027학년도) 기준</div>
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="assets/lessons.js"></script>
+<script src="data/lesson03.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
