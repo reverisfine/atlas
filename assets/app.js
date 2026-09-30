@@ -50,7 +50,7 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;
 function buildPool(){
   toksEl.innerHTML='';sel=null;
   const rest=ALL.filter(it=>!it._done);
-  if(!rest.length)toksEl.appendChild(el('div','done','모든 개념을 소단원에 붙였습니다. 아래 함정 8가지와 출제 빈도로 넘어가세요.'));
+  if(!rest.length)toksEl.appendChild(el('div','done',`모든 개념을 소단원에 붙였습니다. 아래 함정 ${PITS.length}가지와 출제 빈도로 넘어가세요.`));
   shuffle(rest.slice()).forEach(it=>{
     const t=el('button','tok',it.k);t.draggable=true;it._tok=t;
     t.addEventListener('click',()=>{
