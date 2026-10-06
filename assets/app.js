@@ -162,6 +162,13 @@ function curve(x1,y1,x2,y2,col,mk,w,dash){
   p.setAttribute('marker-end',`url(#${mk})`);
   svg.appendChild(p);
 }
+function line(d,col,mk,dash){
+  const p=document.createElementNS(NS,'path');
+  p.setAttribute('d',d);p.setAttribute('fill','none');p.setAttribute('stroke',col);
+  p.setAttribute('stroke-width',1.6);p.setAttribute('stroke-linecap','round');p.setAttribute('stroke-linejoin','round');
+  if(dash)p.setAttribute('stroke-dasharray',dash);if(mk)p.setAttribute('marker-end',`url(#${mk})`);
+  svg.appendChild(p);
+}
 function draw(){
   svg.innerHTML='';
   const mb=map.getBoundingClientRect();
@@ -177,13 +184,18 @@ function draw(){
     const left=Q[bi].pos[1]==='w',P=R(q._pill);
     const sx=left?C.l+14:C.r-14, sy=Q[bi].pos[0]==='n'?C.t+32:C.b-32;
     curve(sx,sy,left?P.r+9:P.l-9,P.cy,'#EE8C93','aC',2.4,'8 7');
-    const AX=left?P.l+20:P.r-20, AY=P.b+3;
-    let ax=AX,ay=AY,pcx=null;
+    /* 소단원 → 개념: 앞 칩에서 흘러나와 다음 칩 머리(코어 쪽 반대편 아닌 가까운 끝)로 들어가는 곡선 */
+    const sd=left?1:-1;                       /* 왼쪽 소단원은 오른쪽 끝, 오른쪽 소단원은 왼쪽 끝 */
+    const edge=X=>left?X.r:X.l;
+    let pv=null;
     [...q._bub.children].forEach(bEl=>{
       const B=R(bEl);
-      if(pcx!==null&&Math.abs(B.cx-pcx)>26){ax=AX;ay=AY;}
-      curve(ax,ay,left?B.r+6:B.l-6,B.cy,COL[bi],'a'+bi,1.6,'5 5');
-      ax=left?B.l+18:B.r-18;ay=B.b+2;pcx=B.cx;
+      if(pv&&B.t<pv.t-2)pv=null;
+      const sx=pv?edge(pv)-sd*14:edge(P)-sd*22, sy=pv?pv.b-2:P.b-3;
+      const ex=edge(B)+sd*5, ey=B.cy, dy=ey-sy, bw=14+dy*0.35;
+      const ox=left?Math.max(sx,ex):Math.min(sx,ex);
+      line(`M${sx},${sy} C${ox+sd*bw*0.7},${sy+dy*0.15} ${ex+sd*bw},${ey} ${ex},${ey}`,COL[bi],'a'+bi,'5 5');
+      pv=B;
     });
   });
 }
