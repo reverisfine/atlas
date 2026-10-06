@@ -14,7 +14,7 @@ const LESSONS=[
  {n:12,t:"취업과 창업 및 기업가 정신 (1)",        ready:false},
  {n:13,t:"취업과 창업 및 기업가 정신 (2)",        ready:false},
  {n:14,t:"취업과 창업 및 기업가 정신 (3)",        ready:false},
- {n:15,t:"근로 관계와 법 (1)",                  ready:false},
+ {n:15,t:"근로 관계와 법 (1)", c:20,             ready:true},
  {n:16,t:"근로 관계와 법 (2)",                  ready:false},
  {n:17,t:"고용 서비스와 사회 제도",               ready:false},
  {n:18,t:"산업 안전과 재해 예방",                 ready:false},
