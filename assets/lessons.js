@@ -13,7 +13,7 @@ const LESSONS=[
  {n:11,t:"경력 개발과 평생 학습의 의미", c:20,     ready:true},
  {n:12,t:"취업과 창업 및 기업가 정신 (1)", c:20,  ready:true},
  {n:13,t:"취업과 창업 및 기업가 정신 (2)", c:20,  ready:true},
- {n:14,t:"취업과 창업 및 기업가 정신 (3)",        ready:false},
+ {n:14,t:"취업과 창업 및 기업가 정신 (3)", c:20,  ready:true},
  {n:15,t:"근로 관계와 법 (1)", c:20,             ready:true},
  {n:16,t:"근로 관계와 법 (2)", c:20,             ready:true},
  {n:17,t:"고용 서비스와 사회 제도", c:20,          ready:true},
