@@ -11,7 +11,7 @@ const LESSONS=[
  {n:9, t:"전공별 직무 수행 능력 탐색 (1)",        ready:false},
  {n:10,t:"전공별 직무 수행 능력 탐색 (2)",        ready:false},
  {n:11,t:"경력 개발과 평생 학습의 의미", c:20,     ready:true},
- {n:12,t:"취업과 창업 및 기업가 정신 (1)",        ready:false},
+ {n:12,t:"취업과 창업 및 기업가 정신 (1)", c:20,  ready:true},
  {n:13,t:"취업과 창업 및 기업가 정신 (2)",        ready:false},
  {n:14,t:"취업과 창업 및 기업가 정신 (3)",        ready:false},
  {n:15,t:"근로 관계와 법 (1)", c:20,             ready:true},
