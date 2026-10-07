@@ -18,7 +18,13 @@ function twoLine(t){
     const a=w.slice(0,i).join(' ').length,b=w.slice(i).join(' ').length;
     if(Math.abs(a-b)<gap){gap=Math.abs(a-b);best=i;}
   }
-  return w.slice(0,best).join(' ')+'<br>'+w.slice(best).join(' ');
+  const a=w.slice(0,best).join(' '),b=w.slice(best).join(' ');
+  if(Math.max(a.length,b.length)<=10) return a+'<br>'+b;
+  /* 긴 제목(20강 등): 한 줄 7자 안팎으로 끊어 여러 줄로 */
+  const L=[];let cur='';
+  w.forEach(x=>{const n=cur?cur+' '+x:x;if(cur&&n.length>7){L.push(cur);cur=x;}else cur=n;});
+  if(cur)L.push(cur);
+  return L.join('<br>');
 }
 $id('fqT').innerHTML     = PAD(LESSON.no)+'강 <b>출제 빈도</b>';
 
