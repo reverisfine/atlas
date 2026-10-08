@@ -8,7 +8,7 @@ const LESSONS=[
  {n:6, t:"제조업과 제품 생산 활동", c:20,         ready:true},
  {n:7, t:"서비스업과 서비스 생산", c:20,          ready:true},
  {n:8, t:"직업 기초 능력의 종류와 향상", c:20,     ready:true},
- {n:9, t:"전공별 직무 수행 능력 탐색 (1)",        ready:false},
+ {n:9, t:"전공별 직무 수행 능력 탐색 (1)", c:20,  ready:true},
  {n:10,t:"전공별 직무 수행 능력 탐색 (2)",        ready:false},
  {n:11,t:"경력 개발과 평생 학습의 의미", c:20,     ready:true},
  {n:12,t:"취업과 창업 및 기업가 정신 (1)", c:20,  ready:true},
