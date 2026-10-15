@@ -464,3 +464,7 @@ button.b.on{background:var(--lime);border-color:var(--lime);color:#fff}
 .pit .mtx td:first-child{white-space:nowrap}
 .pit .mtx th{white-space:nowrap}
 @media(max-width:620px){.pit .mtx{font-size:.76rem}.pit .mtx th,.pit .mtx td{padding:6px 7px}}
+
+/* ---------- 행성 타이핑 입구 버튼 ---------- */
+.nav a.nb.ty{background:#2B3250;border-color:#2B3250;color:#fff}
+.nav a.nb.ty:hover{background:#3A4369;border-color:#3A4369;color:#fff}
