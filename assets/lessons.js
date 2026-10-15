@@ -53,8 +53,9 @@ function buildNav(cur){
     ${cur?`<a class="nb home" href="index.html">⌂ 홈</a>
       <select id="navSel" aria-label="강 선택">${opts}</select>
       <a class="nb ${prev?'':'off'}" href="${prev?'lesson'+PAD(prev.n)+'.html':'#'}">← 이전</a>
-      <a class="nb ${next?'':'off'}" href="${next?'lesson'+PAD(next.n)+'.html':'#'}">다음 →</a>`
-     :`<a class="nb" href="lesson01.html">01강 열기</a>`}
+      <a class="nb ${next?'':'off'}" href="${next?'lesson'+PAD(next.n)+'.html':'#'}">다음 →</a>
+      <a class="nb ty" href="typing.html?l=${PAD(cur)}">🚀 타이핑</a>`
+     :`<a class="nb ty" href="typing.html">🚀 행성 타이핑</a><a class="nb" href="lesson01.html">01강 열기</a>`}
   </div>`;
   document.body.insertBefore(w,document.body.firstChild);
   const sel=w.querySelector('#navSel');
