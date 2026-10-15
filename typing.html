@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,interactive-widget=resizes-content">
+<meta name="theme-color" content="#8FC9A3">
+<title>행성 타이핑 · 은또링쌤의 행성 지도</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/typing.css">
+</head>
+<body class="tyg">
+<div id="tyApp"></div>
+
+<script src="assets/lessons.js"></script>
+<!--TY-LOADER-->
+<script>
+(function(){
+  const n=parseInt(new URLSearchParams(location.search).get('l'),10)||0;
+  const L=LESSONS.find(x=>x.n===n&&x.ready);
+  const go=()=>{const s=document.createElement('script');s.src='assets/typing.js';document.body.appendChild(s);};
+  if(L){const d=document.createElement('script');d.src='data/lesson'+PAD(n)+'.js';d.onload=go;document.body.appendChild(d);}
+  else go();
+})();
+</script>
+<!--/TY-LOADER-->
+</body>
+</html>
