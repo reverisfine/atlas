@@ -20,7 +20,9 @@
   const n=parseInt(new URLSearchParams(location.search).get('l'),10)||0;
   const L=LESSONS.find(x=>x.n===n&&x.ready);
   const go=()=>{const s=document.createElement('script');s.src='assets/typing.js';document.body.appendChild(s);};
-  if(L){const d=document.createElement('script');d.src='data/lesson'+PAD(n)+'.js';d.onload=go;document.body.appendChild(d);}
+  const add=(src,next)=>{const d=document.createElement('script');d.src=src;d.onload=next;d.onerror=next;document.body.appendChild(d);};
+  /* 마인드맵 데이터 → 강별 타이핑 키워드(있을 때만) → 게임 */
+  if(L)add('data/lesson'+PAD(n)+'.js',()=>add('data/type'+PAD(n)+'.js',go));
   else go();
 })();
 </script>
