@@ -124,6 +124,36 @@ const SHIP=`<ellipse cx="-24" cy="0" rx="12" ry="5" fill="#9BE3FF" opacity=".55"
  <path d="M4,-4.5 Q14,-3 17,0 Q14,3 4,4.5 Z" fill="#6FA3C2"/>
  <circle cx="-8" cy="0" r="2" fill="#EE8C93"/>`;
 
+/* 깜짝 퀴즈를 내는 UFO 외계인 · 표정 3가지(happy 기본 · joy 정답 · oops 오답) */
+const UFO=`<g class="ufb"><path d="M-13,12 L-18,22 M13,12 L18,22 M-20,22 h5 M15,22 h5" stroke="#8C949E" stroke-width="3" stroke-linecap="round" fill="none"/>
+ <path d="M-22,-1 A22,30 0 0 1 22,-1 Z" fill="#D8F3FF" opacity=".32"/>
+ <g transform="translate(0 -5)">
+   <path d="M-6,-15 L-9,-22 M6,-15 L9,-22" stroke="#5DB33F" stroke-width="2.4" stroke-linecap="round"/>
+   <circle cx="-9.5" cy="-23" r="2.6" fill="#6CC24A"/><circle cx="9.5" cy="-23" r="2.6" fill="#6CC24A"/>
+   <ellipse cx="0" cy="2" rx="9" ry="7" fill="#5DB33F"/>
+   <ellipse cx="0" cy="-8" rx="11.5" ry="10" fill="#6CC24A"/>
+   <ellipse cx="-4" cy="-12" rx="3.2" ry="1.8" fill="#fff" opacity=".35"/>
+   <g class="uf-face"></g>
+ </g>
+ <path d="M-22,-1 A22,30 0 0 1 22,-1" fill="none" stroke="#9FE0BE" stroke-width="2.4"/>
+ <path d="M-15,-14 A16,22 0 0 1 -5,-25" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".7"/>
+ <path d="M-30,4 Q-28,17 0,18 Q28,17 30,4 Z" fill="#F07E45"/>
+ <path d="M-26,11 Q0,19 26,11" fill="none" stroke="#D9622E" stroke-width="1.6" opacity=".6"/>
+ <ellipse cx="0" cy="3" rx="31" ry="7.5" fill="#B4BBC3"/>
+ <path d="M-24,0.5 Q0,-4 24,0.5" fill="none" stroke="#E2E6EA" stroke-width="2.4" stroke-linecap="round"/>
+ <g class="uf-lt" fill="#FFD54F"><circle cx="-17" cy="5" r="2.6"/><circle cx="0" cy="7" r="2.8"/><circle cx="17" cy="5" r="2.6"/></g></g>`;
+const UFACE={
+ happy:`<ellipse cx="-4" cy="-8.5" rx="1.7" ry="2.2" fill="#2F3A2A"/><ellipse cx="4" cy="-8.5" rx="1.7" ry="2.2" fill="#2F3A2A"/>
+   <path d="M-3.5,-4 Q0,-1 3.5,-4" fill="none" stroke="#2F3A2A" stroke-width="1.5" stroke-linecap="round"/>`,
+ joy:`<path d="M-6,-8 Q-4,-11 -2,-8 M2,-8 Q4,-11 6,-8" fill="none" stroke="#2F3A2A" stroke-width="1.6" stroke-linecap="round"/>
+   <path d="M-3.6,-4.6 Q0,0 3.6,-4.6 Z" fill="#2F3A2A"/>
+   <ellipse cx="-7.5" cy="-4.5" rx="2.2" ry="1.3" fill="#F49AA6" opacity=".8"/><ellipse cx="7.5" cy="-4.5" rx="2.2" ry="1.3" fill="#F49AA6" opacity=".8"/>`,
+ oops:`<circle cx="-4" cy="-8.5" r="2" fill="#2F3A2A"/><circle cx="4" cy="-8.5" r="2" fill="#2F3A2A"/>
+   <ellipse cx="0" cy="-3.5" rx="1.8" ry="2.2" fill="#2F3A2A"/>
+   <path d="M8,-15 q1.5,3 0,4 q-1.5,-1 0,-4 Z" fill="#9BD8FF"/>`
+};
+const ufoSVG=(m,cls)=>`<svg class="${cls||''}" viewBox="-36 -36 72 62" aria-hidden="true"><g class="ufbob">${UFO.replace('<g class="uf-face"></g>','<g class="uf-face">'+UFACE[m||'happy']+'</g>')}</g></svg>`;
+
 /* ---------- 강 고르기 화면 · 모행성을 공전하는 우주선 ---------- */
 if(!L){
   document.title='행성 타이핑 · 은또링쌤의 행성 지도';
@@ -148,7 +178,7 @@ if(!L){
        </svg>
        <h1>행성 <b>타이핑</b></h1>
        <p>강을 고르면 모행성 둘레의 개념 행성 20개를 타이핑으로 하나씩 깨우며 항해합니다.<br>
-         <small>🚀 주행 — 이름 보며 치기 · 🔭 탐사 — 단서로 맞히기 · 완주한 강의 행성은 잠에서 깨어나요</small></p>
+         <small>🚀 주행 — 이름 보며 치기 · 🔭 탐사 — 단서로 맞히기 · 🛸 항해 중 UFO가 나타나면 깜짝 퀴즈! · 완주한 강의 행성은 잠에서 깨어나요</small></p>
      </div>
      <div id="tGroups"></div>
    </div>`;
@@ -161,9 +191,11 @@ if(!L){
   const core=cutePlanet($('#hCore'),'core',92); core.setMood('happy');
   core.g.setAttribute('class','hbob');
   /* 둘레에 떠 있는 작은 행성들 */
-  [[-245,-120,'earth','happy',22],[250,-112,'hearts','wait',18],[-262,118,'spots','sleep',17],[262,120,'sun','happy',20],[-150,148,'clouds','sleep',13],[160,-150,'blue','sleep',12]]
+  [[-245,-120,'earth','happy',22],[250,-112,'hearts','wait',18],[-262,118,'spots','sleep',17],[262,120,'sun','happy',20],[-150,148,'clouds','sleep',13],]
     .forEach(([x,y,t,m,r],k)=>{const g=el('g',{transform:`translate(${x} ${y})`},$('#hSat'));
       const b=el('g',{class:'hbob'},g);b.style.animationDelay=(-k*.7)+'s';const p=cutePlanet(b,t,r);p.setMood(m);});
+  /* 깜짝 퀴즈를 내는 UFO가 구석에 둥실 */
+  {const u=el('g',{transform:'translate(178 -132) scale(1.15)',class:'hufo'},$('#hSat'));u.innerHTML=`<g class="ufbob">${UFO.replace('<g class="uf-face"></g>','<g class="uf-face">'+UFACE.happy+'</g>')}</g>`;}
   /* 공전하는 우주선 */
   const back=$('#hBack'), front=$('#hFront');
   const ship=el('g',{}), shipR=el('g',{},ship); shipR.innerHTML=SHIP;
@@ -302,7 +334,8 @@ app.innerHTML=`
      </div>
    </div>
  </div>
- <div class="fin" id="tyFin"><div class="box" id="tyFinBox"></div></div>`;
+ <div class="fin" id="tyFin"><div class="box" id="tyFinBox"></div></div>
+ <div class="ufo" id="tyUfo"><div class="ubox" id="tyUfoBox" role="dialog" aria-label="깜짝 퀴즈"></div></div>`;
 
 const sv=$('#space'), world=$('#world'), inp=$('#tyIn');
 document.body.classList.add('hudA');
@@ -452,7 +485,10 @@ function fly(){
     sg.el.style.strokeDashoffset=sg.len*(1-e);
     if(!overview){cam.x=camFrom.x+(camTo.x-camFrom.x)*e;cam.y=camFrom.y+(camTo.y-camFrom.y)*e;apply();}
     if(t<1)requestAnimationFrame(f);
-    else{dockFx(j);flying=false;if(queue.length)fly();else if(done)setTimeout(finish,500);}
+    else{dockFx(j);flying=false;
+      if(ufoAt.has(j+1)){ufoAt.delete(j+1);ufoDue++;}
+      /* 빨리 쳐서 퀴즈 지점을 지나쳤으면 행성 3개 뒤에 이어서 나와요 */
+      if(queue.length)fly();else if(ufoDue&&j+1-ufoLast>=3){ufoDue--;ufoLast=j+1;setTimeout(openUfo,350);}else if(done)setTimeout(finish,500);}
   };
   cancelAnimationFrame(camAnim);
   requestAnimationFrame(f);
@@ -476,7 +512,7 @@ sv.addEventListener('pointerdown',()=>setTimeout(()=>inp.focus(),0));
 
 function start(){
   cur=0;t0=0;typed=0;err=0;strokes=0;wrong=0;hint=new Set();reveal=new Set();missed=new Set();lastJ=0;done=false;
-  queue.length=0;flying=false;gTrail.innerHTML='';
+  queue.length=0;flying=false;gTrail.innerHTML='';resetUfo();
   document.querySelectorAll('.seg.md button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
   document.body.classList.toggle('q',mode==='q');
   $('#tyFin').classList.remove('on');
@@ -557,7 +593,7 @@ function paint(){
 }
 
 inp.addEventListener('input',()=>{
-  if(done||cur>=N)return;
+  if(done||cur>=N||ufoOpen)return;
   if(!t0){t0=Date.now();tick();}
   if(overview)setOverview(false);
   const tn=norm(ITEMS[cur].k), iv=norm(inp.value), j=jamo(iv).length;
@@ -573,7 +609,7 @@ inp.addEventListener('keydown',e=>{
 });
 
 function submit(){
-  if(done||cur>=N)return;
+  if(done||cur>=N||ufoOpen)return;
   const it=ITEMS[cur];
   if(norm(inp.value)===norm(it.k)){arrive();return;}
   if(!norm(inp.value))return;
@@ -605,8 +641,113 @@ function arrive(){
   drawBar();
 }
 
+/* ---------- 🛸 깜짝 퀴즈 · 항해 중 UFO가 나타나 지나온 행성을 4지선다로 물어요 ---------- */
+const ALL=SRC.flatMap((z,bi)=>z.items.map(x=>({...x,bi})));
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const eun=w=>{const c=w.charCodeAt(w.length-1);return w+(c>=0xAC00&&c<=0xD7A3?((c-0xAC00)%28?'은':'는'):'은(는)');};
+const top=g=>String(g||'').split(' · ')[0];
+let ufoLast=0, ufoGrp=new Set(), ufoAt=new Set(), ufoDue=0, ufoOpen=false, ufoT=0, ufoN=0, ufoLog=[], ufoAsked=new Set(), ufoQ=null, ufoMap=null;
+function resetUfo(){
+  ufoAt=new Set();ufoDue=0;ufoLast=0;ufoOpen=false;ufoLog=[];ufoAsked=new Set();ufoGrp=new Set();ufoQ=null;
+  inp.disabled=false;$('#tyUfo').classList.remove('on','out');
+  if(ufoMap){ufoMap.remove();ufoMap=null;}
+  /* 행성 11개쯤마다 한 번(최대 5번) · 5개 이하 구역은 없음 · 위치는 매번 조금씩 달라요 */
+  const n=N<6?0:Math.max(1,Math.min(5,Math.round(N/11)));
+  for(let k=1;k<=n;k++){const p=Math.round(N*k/(n+1))+Math.floor(Math.random()*3)-1;ufoAt.add(Math.max(4,Math.min(N-1,p)));}
+  ufoN=ufoAt.size;
+}
+/* 문제 만들기 · 같은 묶음 → 같은 구역 → 나머지 순으로 헷갈리는 보기를 고릅니다 */
+function others(t,need,f){
+  const c=ALL.filter(x=>x.k!==t.k&&f(x)), rank=x=>t.g&&x.g===t.g?0:top(x.g)&&top(x.g)===top(t.g)?1:x.bi===t.bi?2:3;
+  const seen=new Set(), out=[];
+  for(const x of shuf(c).sort((a,b)=>rank(a)-rank(b))){const key=need(x);if(!key||seen.has(key))continue;seen.add(key);out.push(x);if(out.length===3)break;}
+  return out;
+}
+function makeQ(){
+  const passed=ITEMS.slice(0,cur);
+  let pool=passed.filter(x=>!ufoAsked.has(x.k)); if(!pool.length)pool=passed;
+  const weak=pool.filter(x=>missed.has(ITEMS.indexOf(x)));
+  const t=pick(weak.length&&Math.random()<.7?weak:pool); if(!t)return null;
+  ufoAsked.add(t.k);
+  const kinds=['k','k','c'];
+  const grp=ALL.filter(x=>x.g&&x.g===t.g), outer=ALL.filter(x=>x.bi===t.bi&&x.g&&top(x.g)!==top(t.g));
+  if(grp.length>=3&&outer.length&&!ufoGrp.has(t.g))kinds.push('g','g'); /* 같은 묶음은 한 번만 물어요 */
+  const kind=pick(kinds);
+  if(kind==='g'){
+    ufoGrp.add(t.g);
+    /* 묶음과 가까이 있는(헷갈리기 쉬운) 개념 중에서 고릅니다 */
+    const gi=grp.map(x=>ALL.indexOf(x)), near=x=>Math.min(...gi.map(i=>Math.abs(i-ALL.indexOf(x))));
+    const ans=pick([...outer].sort((a,b)=>near(a)-near(b)).slice(0,3)), ins=shuf(grp).slice(0,3);
+    const opts=shuf([...ins.map(x=>({t:x.k,x})),{t:ans.k,x:ans,ok:1}]);
+    return {kind,label:'묶음 확인',q:`다음 중 <b>「${esc(t.g)}」</b>에 해당하지 <u>않는</u> 것은?`,opts,
+      why:`${esc(eun(ans.k))} 「${esc(ans.g)}」에 속해요.`};
+  }
+  if(kind==='c'&&t.desc){
+    const ds=others(t,x=>x.desc,()=>true);
+    if(ds.length===3){
+      const opts=shuf([{t:t.desc,x:t,ok:1},...ds.map(x=>({t:x.desc,x}))]);
+      return {kind,label:'개념 → 설명',q:`<b>「${esc(t.k)}」</b>에 대한 설명으로 옳은 것은?`,opts,why:''};
+    }
+  }
+  const ds=others(t,x=>x.k,()=>true);
+  const opts=shuf([{t:t.k,x:t,ok:1},...ds.map(x=>({t:x.k,x}))]);
+  return {kind:'k',label:'설명 → 개념',q:'다음 설명에 해당하는 개념은?',clue:clueOf(t),opts,why:''};
+}
+function openUfo(){
+  if(ufoOpen)return;
+  ufoQ=makeQ(); if(!ufoQ){if(done)setTimeout(finish,500);return;}
+  ufoOpen=true;ufoT=Date.now();inp.blur();inp.disabled=true;
+  /* 지도 위 우주선 옆으로 UFO가 날아와요 */
+  ufoMap=el('g',{transform:`translate(${shipAt.x+64},${shipAt.y-58})`},world);
+  ufoMap.innerHTML=`<g class="ufmap"><g class="ufbob">${UFO.replace('<g class="uf-face"></g>','<g class="uf-face">'+UFACE.happy+'</g>')}</g></g>`;
+  setTimeout(showUfo,800);
+}
+function showUfo(){
+  const q=ufoQ, k=ufoLog.length+1;
+  $('#tyUfoBox').innerHTML=`
+    <div class="uhead">${ufoSVG('happy','uf')}
+      <div class="bub"><b>깜짝 퀴즈!</b><small>지나온 행성 복습 · ${q.label} · ${Math.min(k,ufoN)}/${ufoN}</small></div></div>
+    <div class="uq">${q.q}</div>
+    ${q.clue?`<div class="uclue">${esc(q.clue)}</div>`:''}
+    <div class="uops ${q.kind==='c'?'long':''}">${q.opts.map((o,i)=>`<button data-i="${i}"><b>${i+1}</b><span>${esc(o.t)}</span></button>`).join('')}</div>
+    <div class="ufb" id="uFb">번호를 누르거나 보기를 골라 주세요</div>
+    <button class="ugo" id="uGo" hidden>계속 항해 →</button>`;
+  $('#tyUfo').classList.remove('out');$('#tyUfo').classList.add('on');
+  document.querySelectorAll('#tyUfoBox .uops button').forEach(b=>b.onclick=()=>answerUfo(+b.dataset.i));
+  $('#uGo').onclick=closeUfo;
+}
+function answerUfo(i){
+  const q=ufoQ; if(!q||q.done)return; q.done=true;
+  const o=q.opts[i], ok=!!o.ok, a=q.opts.findIndex(x=>x.ok), ax=q.opts[a].x;
+  ufoLog.push({k:ax.k,ok});
+  document.querySelectorAll('#tyUfoBox .uops button').forEach((b,j)=>{b.disabled=true;
+    if(j===a)b.classList.add('ok');else if(j===i)b.classList.add('no');});
+  const face=m=>{const f=document.querySelector('#tyUfoBox .uf-face');if(f)f.innerHTML=UFACE[m];
+    const mf=ufoMap&&ufoMap.querySelector('.uf-face');if(mf)mf.innerHTML=UFACE[m];};
+  face(ok?'joy':'oops');
+  const fb=$('#uFb'); fb.classList.toggle('no',!ok);
+  fb.innerHTML=ok?`정답! ⭐ 보너스 별을 얻었어요 ${q.why?'<small>'+q.why+'</small>':''}`
+    :`아쉬워요! 정답은 <b>${a+1}번${q.kind==='c'?'':' '+esc(ax.k)}</b><small>${q.kind==='g'?q.why
+        :q.kind==='c'?`고른 설명은 「${esc(o.x.k)}」에 대한 설명이에요.`:`「${esc(o.x.k)}」 — ${esc(o.x.desc)}`}</small>`;
+  const g=$('#uGo'); g.hidden=false; setTimeout(()=>g.focus(),30);
+}
+function closeUfo(){
+  if(!ufoOpen)return;
+  t0+=Date.now()-ufoT; ufoOpen=false; inp.disabled=false; ufoQ=null;
+  $('#tyUfo').classList.add('out');setTimeout(()=>$('#tyUfo').classList.remove('on','out'),260);
+  if(ufoMap){const m=ufoMap;m.querySelector('.ufmap').classList.add('bye');setTimeout(()=>m.remove(),700);ufoMap=null;}
+  drawTop();
+  if(done)setTimeout(finish,500);else setTimeout(()=>inp.focus(),60);
+}
+document.addEventListener('keydown',e=>{
+  if(!ufoOpen||!$('#tyUfo').classList.contains('on'))return;
+  if(ufoQ&&!ufoQ.done&&/^[1-4]$/.test(e.key)){e.preventDefault();answerUfo(+e.key-1);}
+  else if((!ufoQ||ufoQ.done)&&(e.key==='Enter'||e.key===' ')){e.preventDefault();closeUfo();}
+});
+
 function stat(){
-  const ms=t0?Date.now()-t0:0;
+  const ms=t0?(ufoOpen?ufoT:Date.now())-t0:0; /* 깜짝 퀴즈 푸는 동안은 운항 시간이 멈춰요 */
   return {ms,cpm:ms>3000?Math.round(strokes/(ms/60000)):0,acc:typed?Math.max(0,Math.round((typed-err)/typed*100)):100};
 }
 function tick(){
@@ -639,6 +780,7 @@ function finish(){
     </div>
     <div class="nb2">${better?(best?'🎉 최고 기록을 새로 세웠어요!':'🎉 첫 기록이 저장되었어요!'):`최고 기록 ${mode==='d'?mmss(best.t):(N-best.miss)+'/'+N}`}</div>
     ${mode==='q'&&ms.length?`<div class="ms"><b>다시 볼 행성 ${ms.length}개</b> — ${ms.map(esc).join(' · ')}</div>`:''}
+    ${ufoLog.length?`<div class="uqr">🛸 깜짝 퀴즈 <b>${ufoLog.filter(x=>x.ok).length}/${ufoLog.length}</b> 맞힘${ufoLog.some(x=>!x.ok)?` — 다시 볼 개념: ${ufoLog.filter(x=>!x.ok).map(x=>esc(x.k)).join(' · ')}`:' ⭐'}</div>`:''}
     ${mode==='q'&&hint.size?`<div style="font-size:.78rem;color:var(--muted);margin-top:6px">초성 힌트 ${hint.size}번 사용</div>`:''}
     <div class="acts">
       <button class="pri" id="fAgain">↺ 다시 출발</button>
