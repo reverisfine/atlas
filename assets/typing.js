@@ -215,19 +215,26 @@ const SKIP=/[\s·・‧∙()（）\[\]\-–—,.]/;
 const norm=s=>[...s].filter(c=>!SKIP.test(c)).join('').toLowerCase();
 
 /* ---------- 데이터 ---------- */
+/* 강별 키워드 파일(data/typeNN.js의 TYPE)이 있으면 그것을, 없으면 마인드맵 개념(DATA)을 씁니다 */
+const ZP=parseInt(Q.get('z'),10)||0;                       /* z=1~4 이면 그 구역만 */
+const SRC=typeof TYPE!=='undefined'
+  ?TYPE.map(z=>({name:z.z,items:z.items.map(x=>({k:x.k,desc:x.c||'',g:x.g||'',hot:!!x.hot}))}))
+  :DATA.map(b=>({name:b.b,items:b.items.map(x=>({k:x.k,desc:x.desc||'',g:'',hot:!!x.hot}))}));
+const ZONES=SRC.map((z,bi)=>({...z,bi})).filter(z=>!ZP||z.bi===ZP-1);
 const ITEMS=[];
-DATA.forEach((b,bi)=>b.items.forEach((it,k)=>ITEMS.push({k:it.k,desc:it.desc||'',b:b.b,bi,no:`${bi+1}-${k+1}`,hot:!!it.hot})));
+ZONES.forEach(z=>z.items.forEach((it,k)=>ITEMS.push({...it,b:z.name,bi:z.bi,no:`${z.bi+1}-${k+1}`})));
 const N=ITEMS.length;
+const RKEY=m=>TKEY(LN,m)+(ZP?'z'+ZP:'');
 function clueOf(it){let c=it.desc;[it.k,it.k.replace(/\s+/g,'')].forEach(w=>{if(w.length>1)c=c.split(w).join('○○');});return c;}
 
 /* ---------- 궤도 만들기 · 모행성 둘레를 바깥으로 도는 나선 ---------- */
 const R=rng(LN*977+13), SQ=.8;              /* SQ: 위아래로 살짝 눌린 타원 궤도 */
 const P=[]; let th=-Math.PI*.78, rad=440;
-DATA.forEach((b,bi)=>{
-  if(bi>0)th+=.5;                           /* 구역이 바뀌면 크게 한 번 워프 */
-  b.items.forEach((it,k)=>{
-    if(bi>0||k>0)th+=232/rad;
-    rad+=24;
+ZONES.forEach((z,zi)=>{
+  if(zi>0)th+=.5;                           /* 구역이 바뀌면 크게 한 번 워프 */
+  z.items.forEach((it,k)=>{
+    if(zi>0||k>0)th+=232/rad;
+    rad+=Math.max(10,Math.min(24,11000/rad));   /* 한 바퀴 돌 때마다 궤도 사이가 충분히 벌어지도록 */
     const rr=rad+(R()-.5)*36;
     P.push({x:rr*Math.cos(th),y:rr*Math.sin(th)*SQ,th});
   });
@@ -253,11 +260,13 @@ app.innerHTML=`
    <radialGradient id="hub" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#B9C6D2"/></radialGradient>
  </defs><g id="world"></g></svg>
  <div class="ttop">
-   <a href="lesson${PAD(LN)}.html" title="마인드맵으로">← 마인드맵</a>
+   <a href="lesson${PAD(LN)}.html" title="마인드맵으로">←<span class="bk"> 마인드맵</span></a>
    <div class="ttl">${PAD(LN)}강 ${esc(LESSON.title)}<span>행성 타이핑</span></div>
    <div class="prog"><i id="tProg"></i></div><span class="pc" id="tPc"></span>
    <div class="acc" id="tAcc"></div>
-   <div class="seg"><button data-m="d">🚀 주행</button><button data-m="q">🔭 탐사</button></div>
+   <div class="seg zsel">${[0,...SRC.map((z,i)=>i+1)].map(k=>`<a class="${k===ZP?'on':''}" title="${k?esc(SRC[k-1].name):'모든 구역'}"
+      href="typing.html?l=${PAD(LN)}${k?'&z='+k:''}${Q.get('m')==='q'?'&m=q':''}">${k?k+'구역':'전체'}<small>${k?SRC[k-1].items.length:SRC.reduce((a,z)=>a+z.items.length,0)}</small></a>`).join('')}</div>
+   <div class="seg md"><button data-m="d">🚀 주행</button><button data-m="q">🔭 탐사</button></div>
    <button id="tRe" title="처음부터 다시">↺</button>
  </div>
  <div class="tzoom">
@@ -333,11 +342,11 @@ defs=sv.querySelector('defs');
 })();
 
 /* 구역 이름 */
-DATA.forEach((b,bi)=>{
-  const idx=ITEMS.findIndex(it=>it.bi===bi), n=b.items.length, mid=P[idx+Math.floor((n-1)/2)];
+ZONES.forEach(z=>{
+  const bi=z.bi, idx=ITEMS.findIndex(it=>it.bi===bi), n=z.items.length, mid=P[idx+Math.floor((n-1)/2)];
   const len=Math.hypot(mid.x,mid.y/SQ)||1, ox=mid.x/len*150, oy=mid.y/len*150*SQ;
   const t=el('text',{x:mid.x+ox,y:mid.y+oy,'text-anchor':'middle',class:'zone',fill:COL[bi]},world);
-  t.textContent=`${bi+1}구역 · ${b.b}`;
+  t.textContent=`${bi+1}구역 · ${z.name}`;
 });
 
 /* 궤도 · 우주 정거장 · 우주선 */
@@ -373,6 +382,7 @@ const PL=P.map((p,i)=>{
   el('rect',{x:-pw/2,y:PR+29,width:pw,height:15,rx:7.5,fill:COLD[it.bi]},g);
   const no=el('text',{y:PR+40,'text-anchor':'middle',class:'pl-no'},g); no.textContent=it.no+(it.hot?' ★':'');
   const ds=el('text',{y:PR+60,'text-anchor':'middle',class:'pl-desc'},g);
+  if(it.g){const gt=el('text',{y:-PR-10,'text-anchor':'middle',class:'pl-grp'},g);gt.textContent=it.g;}
   return {g,halo,cp,nm,ds,body};
 });
 const flyPath=el('path',{d:'M0,0',fill:'none',stroke:'none'},world);
@@ -454,20 +464,20 @@ function dockFx(j){ /* 도킹 — 잠자던 행성이 깨어나 웃습니다 */
   const ring=el('circle',{r:PR+4,fill:'none',stroke:c,'stroke-width':3,class:'dockring'},o.g);
   setTimeout(()=>ring.remove(),900);
   o.body.classList.remove('jump');void o.body.getBBox();o.body.classList.add('jump');
-  o.ds.textContent=it.desc;
+  o.ds.textContent=it.desc.length>26?it.desc.slice(0,25)+'…':it.desc;
 }
 
 /* ---------- 상태 ---------- */
 let mode=Q.get('m')==='q'?'q':'d', cur=0, t0, typed, err, strokes, wrong, hint, reveal, missed=new Set(), lastJ=0, done=false;
-document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;
-  try{history.replaceState(null,'','?l='+PAD(LN)+(mode==='q'?'&m=q':''));}catch(e){}start();});
+document.querySelectorAll('.seg.md button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;
+  try{history.replaceState(null,'','?l='+PAD(LN)+(ZP?'&z='+ZP:'')+(mode==='q'?'&m=q':''));}catch(e){}start();});
 $('#tRe').onclick=start;
 sv.addEventListener('pointerdown',()=>setTimeout(()=>inp.focus(),0));
 
 function start(){
   cur=0;t0=0;typed=0;err=0;strokes=0;wrong=0;hint=new Set();reveal=new Set();missed=new Set();lastJ=0;done=false;
   queue.length=0;flying=false;gTrail.innerHTML='';
-  document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
+  document.querySelectorAll('.seg.md button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
   document.body.classList.toggle('q',mode==='q');
   $('#tyFin').classList.remove('on');
   SEG.forEach(s=>s.el.style.strokeDashoffset=s.len);
@@ -509,10 +519,10 @@ function drawBar(){
   mini($('#tPvO'),pv?cur-1:null,pv?(missed.has(cur-1)?'sad':'happy'):'🛰');
   mini($('#tNxO'),nx?cur+1:null,nx?'sleep':'🏁');
   if(mode==='d'){
-    $('#tSub').textContent=it.desc;
+    $('#tSub').innerHTML=(it.g?`<span class="gtag">${esc(it.g)}</span>`:'')+esc(it.desc);
     $('#tTools').innerHTML='<span class="msg" id="tMsg"></span>';
   }else{
-    $('#tSub').textContent=clueOf(it);
+    $('#tSub').innerHTML=esc(clueOf(it))+(it.g?` <span class="gtag">힌트 · ${esc(it.g)}</span>`:'');
     $('#tTools').innerHTML=`<button id="tHint">💡 초성 힌트</button><button id="tSkip">🙋 정답 보기</button><span class="msg" id="tMsg">답을 입력하고 Enter</span>`;
     $('#tHint').onclick=()=>{hint.add(cur);paint();inp.focus();};
     $('#tSkip').onclick=()=>{giveUp();inp.focus();};
@@ -612,7 +622,7 @@ function tick(){
 }
 
 function finish(){
-  const s=stat(), key=TKEY(LN,mode), best=rd(key), miss=missed.size;
+  const s=stat(), key=RKEY(mode), best=rd(key), miss=missed.size;
   const rec={t:s.ms,cpm:s.cpm,acc:s.acc,miss,at:Date.now()};
   const better=!best||(mode==='d'?s.ms<best.t:(miss<best.miss||miss===best.miss&&s.ms<best.t));
   if(better)wr(key,rec);
@@ -621,14 +631,14 @@ function finish(){
   $('#tyFinBox').innerHTML=`
     <div class="em">${mode==='d'?'🚀':'🔭'}</div>
     <h2>${mode==='d'?'항해 완주!':'탐사 완료!'}</h2>
-    <div style="font-size:.86rem;font-weight:600">${PAD(LN)}강 ${esc(LESSON.title)} · 정거장 ${N}개</div>
+    <div style="font-size:.86rem;font-weight:600">${PAD(LN)}강 ${esc(LESSON.title)} · 행성 ${N}개</div>
     <div class="row">
       <div>운항 시간<b>${mmss(s.ms)}</b></div>
       <div>타수<b>${s.cpm}</b>타/분</div>
       ${mode==='d'?`<div>정확도<b>${s.acc}%</b></div>`:`<div>맞힘<b>${N-miss}/${N}</b></div>`}
     </div>
     <div class="nb2">${better?(best?'🎉 최고 기록을 새로 세웠어요!':'🎉 첫 기록이 저장되었어요!'):`최고 기록 ${mode==='d'?mmss(best.t):(N-best.miss)+'/'+N}`}</div>
-    ${mode==='q'&&ms.length?`<div class="ms"><b>다시 볼 정거장 ${ms.length}개</b> — ${ms.map(esc).join(' · ')}</div>`:''}
+    ${mode==='q'&&ms.length?`<div class="ms"><b>다시 볼 행성 ${ms.length}개</b> — ${ms.map(esc).join(' · ')}</div>`:''}
     ${mode==='q'&&hint.size?`<div style="font-size:.78rem;color:var(--muted);margin-top:6px">초성 힌트 ${hint.size}번 사용</div>`:''}
     <div class="acts">
       <button class="pri" id="fAgain">↺ 다시 출발</button>
